@@ -11,6 +11,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static int DB_VERSION_INIT=1;
     public static String DB_NAME="BabyDB";
     public static String DB_TABLE_NAME="babyInfo";
+    public static String DB_TABLE_TEMPERATURE="babyTemperature";
 
 
     //primary key autoincrement
@@ -19,6 +20,11 @@ public class DbHelper extends SQLiteOpenHelper {
             "NAME TEXT, " +
             "BIRTHDAY DATE, " +
             "MEMO TEXT);";
+
+    String babyTemperature = "CREATE TABLE "+DB_TABLE_TEMPERATURE+" (_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "USER_ID INTEGER, " +
+            "TEMPERATURE TEXT" +
+            ");";
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION_INIT);
     }
@@ -26,6 +32,8 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
             db.execSQL(babyTable);
+            db.execSQL(babyTemperature);
+
     }
 
     @Override

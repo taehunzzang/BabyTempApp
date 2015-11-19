@@ -16,6 +16,9 @@ public class DBManager  {
     private DBManager(){
     }
     public static DBManager getInstance(){
+        if(singleIntance!=null){
+
+        }
         return singleIntance;
     }
     public void openDB(Context context){
@@ -46,8 +49,21 @@ public class DBManager  {
 
     public long insertTempValue(String id, String temp){
         ContentValues dbValue = new ContentValues();
-        dbValue.put("id",id);
-        dbValue.put("temp",temp);
-        return mDB.insert(DbHelper.DB_TABLE_NAME,null,dbValue);
+        dbValue.put("USER_ID",id);
+        dbValue.put("TEMPERATURE",temp);
+        return mDB.insert(DbHelper.DB_TABLE_TEMPERATURE,null,dbValue);
+    }
+
+    public String getBabaTemperaturData() {
+        Cursor cursor = mDB.query(DbHelper.DB_TABLE_TEMPERATURE,null,null,null,null,null,null);
+        StringBuilder tempStr = new StringBuilder();
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            while (cursor.moveToNext()){
+                tempStr.append("userId : "+cursor.getInt(1)+" Temperature : "+cursor.getString(2)+"\n");
+            }
+        }
+        return tempStr.toString();
     }
 }
