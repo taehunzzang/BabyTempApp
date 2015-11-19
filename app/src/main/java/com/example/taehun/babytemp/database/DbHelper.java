@@ -8,15 +8,24 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by taehun on 15. 11. 15..
  */
 public class DbHelper extends SQLiteOpenHelper {
-    private String DB_NAME="temp";
-    private String DB_TABLE_NAME="";
-    public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    private static int DB_VERSION_INIT=1;
+    public static String DB_NAME="BabyDB";
+    public static String DB_TABLE_NAME="babyInfo";
+
+
+    //primary key autoincrement
+
+    String babyTable = "CREATE TABLE "+DB_TABLE_NAME+" (_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "NAME TEXT, " +
+            "BIRTHDAY DATE, " +
+            "MEMO TEXT);";
+    public DbHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION_INIT);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+            db.execSQL(babyTable);
     }
 
     @Override
