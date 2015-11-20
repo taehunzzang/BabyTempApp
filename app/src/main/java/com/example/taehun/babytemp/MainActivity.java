@@ -1,5 +1,6 @@
 package com.example.taehun.babytemp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mdbManager = DBManager.getInstance();
+        mdbManager.openDB(getApplicationContext());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -41,8 +45,12 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+
+                Intent intent = new Intent(getApplicationContext(),AddUserActivity.class);
+                intent.putExtra("isAddMode",true);
+                startActivity(intent);
             }
         });
 
@@ -55,8 +63,7 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mdbManager = DBManager.getInstance();
-        mdbManager.openDB(getApplicationContext());
+
         makeNaviItems();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -74,7 +81,7 @@ public class MainActivity extends AppCompatActivity
             cursor.moveToFirst();
             while (!cursor.isAfterLast()){
 
-                menu.add(0,1,0,cursor.getString(cursor.getColumnIndex("NAME")));//컬럼명의 대소문자를 가린다.
+                menu.add(0,1,0,cursor.getString(cursor.getColumnIndex("name")));//컬럼명의 대소문자를 가린다.
 
                 cursor.moveToNext();
             }
@@ -121,9 +128,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id==1){
-            Toast.makeText(getApplicationContext(),"taehun kim",Toast.LENGTH_SHORT).show();
-        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

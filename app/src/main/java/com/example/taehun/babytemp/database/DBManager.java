@@ -29,6 +29,7 @@ public class DBManager  {
         ContentValues dbValue = new ContentValues();
         dbValue.put("name",name);
         dbValue.put("birthday_date",date);
+
         return mDB.insert(DbHelper.DB_TABLE_NAME,null,dbValue);
     }
     public boolean moreThen1(){
@@ -68,7 +69,8 @@ public class DBManager  {
         return tempStr.toString();
     }
 
-    public Cursor getBabyTemperatureData(){
-        return mDB.query(DbHelper.DB_TABLE_TEMPERATURE,null,null,null,null,null,null);
+    public Cursor getBabyTemperatureData(String userId) {
+        String []where = {"user_id"};
+        return mDB.query(DbHelper.DB_TABLE_TEMPERATURE,where,null,null,null,null,null);
     }
 }

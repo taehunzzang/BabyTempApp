@@ -16,13 +16,17 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     EditText babyName,year, month, day;
     Button saveData;
     DBManager mdbManager;
+    boolean isAddMode = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
+
+        isAddMode = getIntent().getBooleanExtra("isAddMode",false);
+
         mdbManager = DBManager.getInstance();
         mdbManager.openDB(getApplicationContext());
-        if(mdbManager.moreThen1()){
+        if(mdbManager.moreThen1()&& !isAddMode){
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
             finish();

@@ -73,10 +73,10 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         mdbManager.openDB(getActivity());
 
 
-        cs = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_2, mdbManager.getBabyTemperatureData(),
-                new String[] {"user_id", "temperature"}, new int[] {android.R.id.text1, android.R.id.text2});
+//        cs = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_2, mdbManager.getBabyTemperatureData(),
+//                new String[] {"user_id", "temperature"}, new int[] {android.R.id.text1, android.R.id.text2});
 
-        adapter = new UserDataCursorAdapter(getActivity(),mdbManager.getBabyTemperatureData(),true);
+        adapter = new UserDataCursorAdapter(getActivity(),mdbManager.getBabyTemperatureData(""),true);
         listViewData.setAdapter(adapter);
     }
 
@@ -103,7 +103,7 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     private void showTemperatureData() {
         Log.e("Temperature", "" + mdbManager.getBabaTemperaturData());
         listTemperature.setText(mdbManager.getBabaTemperaturData());
-        adapter.swapCursor(mdbManager.getBabyTemperatureData());
+        adapter.swapCursor(mdbManager.getBabyTemperatureData(""));
     }
 
     private void saveBabyTemperature() {

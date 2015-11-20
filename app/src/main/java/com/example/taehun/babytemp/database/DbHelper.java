@@ -18,7 +18,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     String babyTable = "CREATE TABLE "+DB_TABLE_NAME+" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "name TEXT, " +
-            "brithday_date, " +
+            "birthday_date TEXT, " +
             "memo TEXT);";
 
     String babyTemperature = "CREATE TABLE "+DB_TABLE_TEMPERATURE+" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +

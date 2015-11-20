@@ -19,7 +19,7 @@ public class UserDataCursorAdapter extends CursorAdapter {
     SimpleDateFormat sdf;
     public UserDataCursorAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
-        sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     }
 
     @Override
@@ -30,19 +30,21 @@ public class UserDataCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+        TextView userTemperature = (TextView) view.findViewById(R.id.userTemperature);
         TextView userData = (TextView) view.findViewById(R.id.userData);
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(cursor.getLong(3));
-        userData.setText(cursor.getString(2)+sdf.format(cal.getTimeInMillis()));
+        userTemperature.setText(cursor.getString(2));
+        userData.setText(sdf.format(cal.getTimeInMillis()));
         changeTextColor(userData, cursor.getString(2));
     }
 
     private void changeTextColor(TextView userData, String string) {
         float tempValue = convertStr2long(string);
         if(tempValue<37.0){
-            userData.setTextColor(Color.parseColor("#ffbb00"));
+            userData.setTextColor(Color.parseColor("#76F013"));
         }else if(tempValue<38.0){
-            userData.setTextColor(Color.parseColor("#bbff00"));
+            userData.setTextColor(Color.parseColor("#F28931"));
         }else{
             userData.setTextColor(Color.parseColor("#ff0000"));
         }
