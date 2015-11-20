@@ -16,14 +16,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //primary key autoincrement
 
-    String babyTable = "CREATE TABLE "+DB_TABLE_NAME+" (_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "NAME TEXT, " +
-            "BIRTHDAY DATE, " +
-            "MEMO TEXT);";
+    String babyTable = "CREATE TABLE "+DB_TABLE_NAME+" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "name TEXT, " +
+            "brithday_date, " +
+            "memo TEXT);";
 
-    String babyTemperature = "CREATE TABLE "+DB_TABLE_TEMPERATURE+" (_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "USER_ID INTEGER, " +
-            "TEMPERATURE TEXT" +
+    String babyTemperature = "CREATE TABLE "+DB_TABLE_TEMPERATURE+" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "user_id INTEGER, " +
+            "temperature TEXT, " +
+            "insertDate INTEGER, " +
+            "memo TEXT"+
             ");";
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION_INIT);

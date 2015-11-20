@@ -3,11 +3,13 @@ package com.example.taehun.babytemp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.taehun.babytemp.database.DBManager;
@@ -22,7 +24,9 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     Button plus, minus, saveTemperature, reFreshData;
     TextView tempTxt, listTemperature;
     int tempValue = 365;
-
+    ListView listViewData;
+    SimpleCursorAdapter cs;
+    UserDataCursorAdapter adapter;
 
     public UserDataFragment() {
         super();
@@ -45,26 +49,21 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initUI(View view) {
+
         plus = (Button) view.findViewById(R.id.plus);
         minus = (Button) view.findViewById(R.id.minus);
         saveTemperature = (Button) view.findViewById(R.id.saveTemperature);
         reFreshData = (Button) view.findViewById(R.id.reFreshData);
         tempTxt = (TextView) view.findViewById(R.id.tempTxt);
         listTemperature = (TextView) view.findViewById(R.id.listTemperature);
+        listViewData = (ListView) view.findViewById(R.id.listViewData);
 
         plus.setOnClickListener(this);
         minus.setOnClickListener(this);
         saveTemperature.setOnClickListener(this);
         reFreshData.setOnClickListener(this);
 
-
         tempTxt.setText(converValue(tempValue));
-
-    }
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
@@ -72,6 +71,13 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
         mdbManager = DBManager.getInstance();
         mdbManager.openDB(getActivity());
+
+
+        cs = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_2, mdbManager.getBabyTemperatureData(),
+                new String[] {"user_id", "temperature"}, new int[] {android.R.id.text1, android.R.id.text2});
+
+        adapter = new UserDataCursorAdapter(getActivity(),mdbManager.getBabyTemperatureData(),true);
+        listViewData.setAdapter(adapter);
     }
 
     @Override
@@ -95,15 +101,14 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     }
 
     private void showTemperatureData() {
-        Log.e("Temperature",""+mdbManager.getBabaTemperaturData());
+        Log.e("Temperature", "" + mdbManager.getBabaTemperaturData());
         listTemperature.setText(mdbManager.getBabaTemperaturData());
+        adapter.swapCursor(mdbManager.getBabyTemperatureData());
     }
 
     private void saveBabyTemperature() {
-        mdbManager.insertTempValue("1", tempTxt.getText().toString());
+        mdbManager.insertTempValue("1", tempTxt.getText().toString(),System.currentTimeMillis());
         showTemperatureData();
-
-
     }
 
     private String converValue(int tempValue) {

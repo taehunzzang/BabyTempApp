@@ -27,8 +27,8 @@ public class DBManager  {
     }
     public long insertValues(String name, String date){
         ContentValues dbValue = new ContentValues();
-        dbValue.put("NAME",name);
-        dbValue.put("BIRTHDAY",date);
+        dbValue.put("name",name);
+        dbValue.put("birthday_date",date);
         return mDB.insert(DbHelper.DB_TABLE_NAME,null,dbValue);
     }
     public boolean moreThen1(){
@@ -47,10 +47,11 @@ public class DBManager  {
         return cursor;
     }
 
-    public long insertTempValue(String id, String temp){
+    public long insertTempValue(String id, String temp, long insertTime){
         ContentValues dbValue = new ContentValues();
-        dbValue.put("USER_ID",id);
-        dbValue.put("TEMPERATURE",temp);
+        dbValue.put("user_id",id);
+        dbValue.put("temperature",temp);
+        dbValue.put("insertDate",insertTime);
         return mDB.insert(DbHelper.DB_TABLE_TEMPERATURE,null,dbValue);
     }
 
@@ -65,5 +66,9 @@ public class DBManager  {
             }
         }
         return tempStr.toString();
+    }
+
+    public Cursor getBabyTemperatureData(){
+        return mDB.query(DbHelper.DB_TABLE_TEMPERATURE,null,null,null,null,null,null);
     }
 }

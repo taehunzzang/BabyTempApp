@@ -15,8 +15,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -55,20 +54,23 @@
             android:id="@+id/reFreshData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SAVE"/>
+            android:text="Refresh"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/listTemperature"
         android:layout_width="match_parent"
         android:layout_weight="1"
+        android:visibility="gone"
         android:layout_height="0dp" />
 
     <ListView
-        android:visibility="gone"
+        android:visibility="visible"
+        android:id="@+id/listViewData"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="1"
+        >
 
     </ListView>
 </LinearLayout>
