@@ -63,14 +63,42 @@ public class DBManager  {
         if(cursor.getCount()>0){
             cursor.moveToFirst();
             while (cursor.moveToNext()){
-                tempStr.append("userId : "+cursor.getInt(1)+" Temperature : "+cursor.getString(2)+"\n");
+                tempStr.append("user_id : "+cursor.getInt(1)+" Temperature : "+cursor.getString(2)+"\n");
             }
         }
         return tempStr.toString();
     }
 
     public Cursor getBabyTemperatureData(String userId) {
-        String []where = {"user_id"};
-        return mDB.query(DbHelper.DB_TABLE_TEMPERATURE,where,null,null,null,null,null);
+        String where = "user_id = '"+userId+"'";
+        String orderby = "_id desc";
+        return mDB.query(DbHelper.DB_TABLE_TEMPERATURE, null, where, null, null, null, orderby);
+    }
+    public String getName2Id(String _name){
+        String userId = "";
+        String where = "name = '"+_name+"'";
+
+        Cursor c = mDB.query(DbHelper.DB_TABLE_NAME,null,where,null,null,null,null);
+        if (c.moveToFirst()) {
+            while(!c.isAfterLast()) { // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+                userId = c.getString(c.getColumnIndex("_id"));
+                c.moveToNext();
+            }
+        }
+     return userId;
+    }
+
+    public String getOldUser(){//first enter Fragemtn call first User
+        String userId = "";
+        Cursor c = mDB.query(DbHelper.DB_TABLE_NAME,null,null,null,null,null,null);
+        if (c.moveToFirst()) {
+            while(!c.isAfterLast()) { // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+                userId = c.getString(c.getColumnIndex("_id"));
+                c.moveToNext();
+                break;
+            }
+        }
+
+        return userId;
     }
 }

@@ -1,8 +1,14 @@
 package com.example.taehun.babytemp;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,18 +24,42 @@ import com.example.taehun.babytemp.database.DBManager;
  * Created by taehun on 15. 11. 18..
  */
 public class UserDataFragment extends Fragment implements View.OnClickListener{
-    DBManager mdbManager;
 
+    public OnHeadlineSelectedListener mCallback;
+
+    public interface OnHeadlineSelectedListener {
+        void onArticleSelected(int position);
+    }
+
+    public void setOnHeadlineSelectedListener(OnHeadlineSelectedListener l){
+        mCallback = l;
+    }
+    DBManager mdbManager;
+    String currentUserId = "";
 
     Button plus, minus, saveTemperature, reFreshData;
     TextView tempTxt, listTemperature;
     int tempValue = 365;
     ListView listViewData;
-    SimpleCursorAdapter cs;
     UserDataCursorAdapter adapter;
+
 
     public UserDataFragment() {
         super();
+
+    }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnHeadlineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
     @Override
@@ -41,11 +71,30 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.content_main,container,false);
-
+        mCallback.onArticleSelected(1);
         initUI(view);
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-name"));
         return view;
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            currentUserId = intent.getStringExtra("userId");
+
+            changeUser(currentUserId);
+//            String message = intent.getStringExtra("message");
+//            Log.d("receiver", "Got message: " + message);
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     private void initUI(View view) {
@@ -71,12 +120,9 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
         mdbManager = DBManager.getInstance();
         mdbManager.openDB(getActivity());
+        currentUserId = mdbManager.getOldUser();
 
-
-//        cs = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_2, mdbManager.getBabyTemperatureData(),
-//                new String[] {"user_id", "temperature"}, new int[] {android.R.id.text1, android.R.id.text2});
-
-        adapter = new UserDataCursorAdapter(getActivity(),mdbManager.getBabyTemperatureData(""),true);
+        adapter = new UserDataCursorAdapter(getActivity(),mdbManager.getBabyTemperatureData(currentUserId),true);
         listViewData.setAdapter(adapter);
     }
 
@@ -103,11 +149,11 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     private void showTemperatureData() {
         Log.e("Temperature", "" + mdbManager.getBabaTemperaturData());
         listTemperature.setText(mdbManager.getBabaTemperaturData());
-        adapter.swapCursor(mdbManager.getBabyTemperatureData(""));
+        adapter.swapCursor(mdbManager.getBabyTemperatureData(currentUserId));
     }
 
     private void saveBabyTemperature() {
-        mdbManager.insertTempValue("1", tempTxt.getText().toString(),System.currentTimeMillis());
+        mdbManager.insertTempValue(currentUserId, tempTxt.getText().toString(), System.currentTimeMillis());
         showTemperatureData();
     }
 
@@ -115,4 +161,11 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         float tempValue1 = ((tempValue % 10)*0.1F)+(tempValue/10);
         return tempValue1+"";
     }
+
+    private void changeUser(String id){
+        adapter.swapCursor(mdbManager.getBabyTemperatureData(id));
+
+    }
+
+
 }
