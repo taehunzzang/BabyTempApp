@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.taehun.babytemp.database.DBManager;
 
@@ -37,7 +40,7 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     DBManager mdbManager;
     String currentUserId = "";
 
-    Button plus, minus, saveTemperature, reFreshData;
+    Button plus, plusMore, minusMore, minus, saveTemperature, reFreshData;
     TextView tempTxt, listTemperature;
     int tempValue = 365;
     ListView listViewData;
@@ -84,6 +87,7 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         @Override
         public void onReceive(Context context, Intent intent) {
             currentUserId = intent.getStringExtra("userId");
+            getActivity().setTitle(intent.getStringExtra("userName"));
 
             changeUser(currentUserId);
 //            String message = intent.getStringExtra("message");
@@ -101,6 +105,8 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
 
         plus = (Button) view.findViewById(R.id.plus);
         minus = (Button) view.findViewById(R.id.minus);
+        plusMore = (Button) view.findViewById(R.id.plusMore);
+        minusMore = (Button) view.findViewById(R.id.minusMore);
         saveTemperature = (Button) view.findViewById(R.id.saveTemperature);
         reFreshData = (Button) view.findViewById(R.id.reFreshData);
         tempTxt = (TextView) view.findViewById(R.id.tempTxt);
@@ -108,11 +114,32 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         listViewData = (ListView) view.findViewById(R.id.listViewData);
 
         plus.setOnClickListener(this);
+        plusMore.setOnClickListener(this);
+        minusMore.setOnClickListener(this);
         minus.setOnClickListener(this);
         saveTemperature.setOnClickListener(this);
         reFreshData.setOnClickListener(this);
 
         tempTxt.setText(converValue(tempValue));
+
+//        listViewData.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(getActivity(),"list Touch",Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+        listViewData.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Cursor c = (Cursor) adapterView.getItemAtPosition(i);
+                mdbManager.deleteItem(c.getInt(0));
+                showTemperatureData();
+                Toast.makeText(getActivity(),"데이터가 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+        });
     }
 
     @Override
@@ -121,7 +148,7 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
         mdbManager = DBManager.getInstance();
         mdbManager.openDB(getActivity());
         currentUserId = mdbManager.getOldUser();
-
+        getActivity().setTitle(mdbManager.getOldUserName());
         adapter = new UserDataCursorAdapter(getActivity(),mdbManager.getBabyTemperatureData(currentUserId),true);
         listViewData.setAdapter(adapter);
     }
@@ -130,11 +157,19 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.minus:
-                tempValue = tempValue -1;
+                tempValue = tempValue - 1;
+                tempTxt.setText(converValue(tempValue)+"");
+                break;
+            case R.id.minusMore:
+                tempValue = tempValue - 10;
                 tempTxt.setText(converValue(tempValue)+"");
                 break;
             case R.id.plus:
                 tempValue = tempValue + 1;
+                tempTxt.setText(converValue(tempValue)+"");
+                break;
+            case R.id.plusMore:
+                tempValue = tempValue + 10;
                 tempTxt.setText(converValue(tempValue)+"");
                 break;
             case R.id.saveTemperature:

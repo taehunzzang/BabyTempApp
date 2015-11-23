@@ -101,4 +101,29 @@ public class DBManager  {
 
         return userId;
     }
+    public String getOldUserName(){//first enter Fragemtn call first User
+        String userName = "";
+        Cursor c = mDB.query(DbHelper.DB_TABLE_NAME,null,null,null,null,null,null);
+        if (c.moveToFirst()) {
+            while(!c.isAfterLast()) { // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+                userName = c.getString(c.getColumnIndex("name"));
+                c.moveToNext();
+                break;
+            }
+        }
+
+        return userName;
+    }
+
+    public boolean deleteItem(int _value){
+        String where = "_id = '"+_value+"'";
+
+        int temptValues = mDB.delete(DbHelper.DB_TABLE_TEMPERATURE,"_id=?",new String[]{_value+""});
+        if(temptValues>0){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }

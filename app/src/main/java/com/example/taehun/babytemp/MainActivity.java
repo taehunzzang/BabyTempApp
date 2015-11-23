@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity
 
         makeNaviItems();
 
+
+
         ft= getSupportFragmentManager().beginTransaction();
         currentFragment = new UserDataFragment();
         ft.replace(R.id.placeholder, currentFragment);
@@ -93,39 +95,6 @@ public class MainActivity extends AppCompatActivity
                 cursor.moveToNext();
             }
             Log.i("","tempValue : "+"ValuesAAAAA");
-//            for (int i = 0, count = navigationView.getChildCount(); i < count; i++) {
-//
-//                final View child = navigationView.getChildAt(i);
-//                if (child != null && child instanceof ListView) {
-//                    final ListView menuView = (ListView) child;
-//                    final HeaderViewListAdapter adapter = (HeaderViewListAdapter) menuView.getAdapter();
-//                    final BaseAdapter wrapped = (BaseAdapter) adapter.getWrappedAdapter();
-//                    menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                        @Override
-//                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-////                            currentFragment.setOnHeadlineSelectedListener(new UserDataFragment.OnHeadlineSelectedListener() {
-////                                @Override
-////                                public void onArticleSelected(int position) {
-////
-////                                }
-////                            });
-//                            Toast.makeText(MainActivity.this, ""+adapterView.getItemAtPosition(i), Toast.LENGTH_SHORT).show();
-//                            Menu temp1 = (Menu) adapterView.getItemAtPosition(i);
-//                            Log.i("","tempValue : "+adapterView.getItemAtPosition(i));
-//
-//                            Intent intent = new Intent("custom-event-name");
-//                            intent.putExtra("user_id", "");
-//                            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
-//
-//
-//                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//                            drawer.closeDrawer(GravityCompat.START);
-//                        }
-//                    });
-//                    wrapped.notifyDataSetChanged();
-//                }
-//            }
         }
 
     }
@@ -168,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         Intent i = new Intent("custom-event-name");
 
         i.putExtra("userId", mdbManager.getName2Id(item.getTitle().toString()));
+        i.putExtra("userName", item.getTitle());
         LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(i);
 
         Toast.makeText(MainActivity.this ,mdbManager.getName2Id(item.getTitle().toString()),Toast.LENGTH_SHORT).show();;
@@ -184,5 +154,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onArticleSelected(int position) {
 
+    }
+
+    public void setActionBarTitle(String title){
+        setTitle(title);
     }
 }
