@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +44,7 @@ public class UserDataFragment extends Fragment implements View.OnClickListener{
     int tempValue = 365;
     ListView listViewData;
     UserDataCursorAdapter adapter;
+
 
 
     public UserDataFragment() {
